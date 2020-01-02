@@ -1,18 +1,42 @@
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import { json } from 'body-parser'
 import mongoose from 'mongoose'
 import cors from 'cors'
+
+import { getTime } from './utils/misc'
+import { ErrorType } from './types/error'
 
 import rootRouter from './routes/root'
 
 const { MONGO_URI } = process.env
 
+/*==============================================
+                app
+===============================================*/
 const app = express()
 
 app.use(cors())
 app.use(json())
 
 app.use(rootRouter)
+
+/*==============================================
+                error middleware
+===============================================*/
+app.use((err: ErrorType, req: Request, res: Response, next: NextFunction) => {
+	if (err.message === 'Validation failed') {
+		console.log('[errorMiddleware]', getTime(), err.message)
+	} else if (err.name === 'SyntaxError') {
+		console.log('[errorMiddleware][SyntaxError]', getTime(), err.message)
+	} else {
+		console.log('[errorMiddleware]', getTime(), err)
+	}
+	res.status(err.statusCode || 500).json({ message: err.message, data: err.data || null })
+})
+
+/*==============================================
+                init
+===============================================*/
 
 const PORT = 8080
 
