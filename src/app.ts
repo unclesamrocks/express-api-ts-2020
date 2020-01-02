@@ -5,6 +5,7 @@ import cors from 'cors'
 
 import { getTime } from './utils/misc'
 import { ErrorType } from './types/error'
+import DIRS from './utils/path'
 
 import rootRouter from './routes/root'
 
@@ -17,6 +18,8 @@ const app = express()
 
 app.use(cors())
 app.use(json())
+
+app.use(express.static(DIRS.PUBLIC))
 
 app.use(rootRouter)
 
@@ -46,7 +49,7 @@ const init = async () => {
 		app.listen(PORT)
 		console.log(`[App] Started! http://localhost:${PORT}`)
 	} catch (error) {
-		console.log('[App]', error)
+		console.log('[App][Error]', error)
 	}
 }
 

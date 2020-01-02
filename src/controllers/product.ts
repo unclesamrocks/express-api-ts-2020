@@ -1,11 +1,18 @@
-import { Request, Response, NextFunction } from 'express'
+import path from 'path'
+
+import { Request, Response, NextFunction, RequestHandler } from 'express'
 import { ErrorType } from '../types/error'
+import { copyFile, deleteFile } from '../utils/fs'
+
+import DIRS from '../utils/path'
 
 import Product from '../models/product'
 
 export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const prods = await Product.find().limit(100)
+		const prods = await Product.find()
+			.limit(100)
+			.sort({ createdAt: 'desc' })
 		const count = await Product.estimatedDocumentCount()
 		res.status(200).json({
 			message: 'OK!',
@@ -29,9 +36,17 @@ export const findOne = async (req: Request, res: Response, next: NextFunction) =
 
 export const addOne = async (req: Request, res: Response, next: NextFunction) => {
 	try {
+		await deleteFile('http://google.com')
 		const prod = new Product({ title: req.body.title })
 		if (req.body.price) prod.price = req.body.price
+		// check for img upload
 		if (req.body.imageUrl) prod.imageUrl = req.body.imageUrl
+		if (req.file) {
+			const { filename } = req.file
+			prod.imageUrl = `/upload/${filename}`
+			await copyFile(path.join(DIRS.TEMP, filename), path.join(DIRS.UPLOAD, filename))
+		}
+		// ...
 		if (req.body.descSmall) prod.descSmall = req.body.descSmall
 		if (req.body.descFull) prod.descFull = req.body.descFull
 		if (req.body.rating) prod.rating = req.body.rating
@@ -39,6 +54,9 @@ export const addOne = async (req: Request, res: Response, next: NextFunction) =>
 		res.status(200).json({ message: 'OK!', product: prod })
 	} catch (error) {
 		next(error)
+		if (req.file) deleteFile(path.join(DIRS.PUBLIC, req.file.filename))
+	} finally {
+		if (req.file) deleteFile(path.join(DIRS.TEMP, req.file.filename))
 	}
 }
 
@@ -62,10 +80,38 @@ export const editOne = async (req: Request, res: Response, next: NextFunction) =
 		prod.price = price
 		prod.descSmall = descSmall
 		prod.descFull = descFull
-		prod.imageUrl = imageUrl
+		// check for img upload
+		if (req.file) {
+			await deleteFile(path.join(DIRS.PUBLIC, prod.imageUrl!))
+			const { filename } = req.file
+			await copyFile(path.join(DIRS.TEMP, filename), path.join(DIRS.UPLOAD, filename))
+			prod.imageUrl = `/upload/${filename}`
+		} else if (imageUrl) {
+			if (imageUrl !== prod.imageUrl && /upload/.test(prod.imageUrl!)) {
+				await deleteFile(path.join(DIRS.PUBLIC, prod.imageUrl!))
+			}
+			prod.imageUrl = imageUrl
+		}
+		// ...
 		prod.rating = rating
 		await prod.save()
 		res.status(200).json({ message: 'OK!', prodId: prod._id })
+	} catch (error) {
+		next(error)
+		if (req.file) deleteFile(path.join(DIRS.PUBLIC, req.file.filename))
+	} finally {
+		if (req.file) deleteFile(path.join(DIRS.TEMP, req.file.filename))
+	}
+}
+
+export const removeAll: RequestHandler = async (req, res, next) => {
+	try {
+		const prods = await Product.find()
+		for (const prod of prods) {
+			if (prod.imageUrl) await deleteFile(path.join(DIRS.PUBLIC, prod.imageUrl))
+			await prod.remove()
+		}
+		res.status(200).json({ message: 'OK' })
 	} catch (error) {
 		next(error)
 	}
