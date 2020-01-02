@@ -33,10 +33,10 @@
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "tsc -w & nodemon -r dotenv/config ./dist/app.js",
-		"prod": "npm run build && nodemon -r dotenv/config ./dist/app.js",
 		"build": "rimraf dist && tsc",
-		"start": "npm run dev"
+		"start:dev": "npm run build && (tsc -w & nodemon -r dotenv/config ./dist/app.js)",
+		"start:prod": "npm run build && node -r dotenv/config ./dist/app.js",
+		"start": "npm run start:dev"
 	},
 	"keywords": [],
 	"author": "",
