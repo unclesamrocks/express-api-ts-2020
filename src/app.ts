@@ -45,7 +45,11 @@ const PORT = 8080
 
 const init = async () => {
 	try {
-		await mongoose.connect(MONGO_URI!, { useNewUrlParser: true, useUnifiedTopology: true })
+		await mongoose.connect(MONGO_URI!, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+			useCreateIndex: true
+		})
 		app.listen(PORT)
 		console.log(`[App] Started! http://localhost:${PORT}`)
 	} catch (error) {
