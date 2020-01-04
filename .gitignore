@@ -1,8 +1,13 @@
 # custom
-*.jpg
-*.jpeg
-*.png
-*.svg
+/public/**/*.jpg
+/public/**/*.jpeg
+/public/**/*.png
+/public/**/*.svg
+
+/temp/**/*.jpg
+/temp/**/*.jpeg
+/temp/**/*.png
+/temp/**/*.svg
 
 # Logs
 logs
