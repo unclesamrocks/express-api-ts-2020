@@ -95,7 +95,7 @@ export const editOne = async (req: Request, res: Response, next: NextFunction) =
 		// ...
 		prod.rating = rating
 		await prod.save()
-		res.status(200).json({ message: 'OK!', prodId: prod._id })
+		res.status(200).json({ message: 'OK!', prodId: prod._id, product: prod })
 	} catch (error) {
 		next(error)
 		if (req.file) deleteFile(path.join(DIRS.PUBLIC, req.file.filename))

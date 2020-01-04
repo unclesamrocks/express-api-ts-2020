@@ -31,6 +31,8 @@ app.use((err: ErrorType, req: Request, res: Response, next: NextFunction) => {
 		console.log('[errorMiddleware]', getTime(), err.message)
 	} else if (err.name === 'SyntaxError') {
 		console.log('[errorMiddleware][SyntaxError]', getTime(), err.message)
+	} else if (err.name === 'JsonWebTokenError') {
+		console.log('[errorMiddleware][JsonWebTokenError]', getTime(), err.message)
 	} else {
 		console.log('[errorMiddleware]', getTime(), err)
 	}

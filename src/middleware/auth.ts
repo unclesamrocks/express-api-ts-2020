@@ -24,7 +24,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 export const isAdmin: RequestHandler = async (req, res, next) => {
 	try {
 		const user = await User.findById(req.userId)
-		if (!user || user.isAdmin !== true) throw new ErrorType(500, 'User not found')
+		if (!user || user.isAdmin !== true) throw new ErrorType(500, 'User not found || not Admin')
 		next()
 	} catch (error) {
 		next(error)
