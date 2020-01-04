@@ -1,6 +1,15 @@
-# express-api-ts-2020
+# **NPM**:
 
-## install prerequisites:
+1. `git clone` repository
+2. `npm i` to install dependencies
+3. [Install prerequisites](#install-prerequisites)
+   - [MongoDB](#MongoDB)
+   - [.env](#.env) file
+4. `npm start` to load local server (default port: `8080`)
+
+# **Install prerequisites**:
+
+## **MongoDB**:
 
 1. Register account on `https://cloud.mongodb.com`
 2. Create cluster on any FREE-TIER server
@@ -43,14 +52,11 @@
 
    - > omit symbols in actual settings "**\<**", "**\>**" !
 
-## how to install:
+## **.env**
 
-1. `git clone` repository
-2. `npm i` to install dependencies
-3. `npm start` to load local server (default port: `8080`)
-4. in root directory create `.env` file with link from _MongoDB Cluster_ and _JWT Secret_
+in root directory create `.env` file with link from _MongoDB Cluster_ and _JWT Secret_
 
-   ```
-   MONGO_URI=mongodb+srv://<username>:<password>@some-link-to-db.azure.mongodb.net/<collection-name>?retryWrites=true&w=majority
-   JWT_SECRET=<some-secured-key>
-   ```
+```
+MONGO_URI=mongodb+srv://<username>:<password>@some-link-to-db.azure.mongodb.net/<collection-name>?retryWrites=true&w=majority
+JWT_SECRET=<some-secured-key>
+```
