@@ -1,11 +1,18 @@
 # **NPM**:
 
+Before:
+
 1. `git clone` repository
 2. `npm i` to install dependencies
 3. [Install prerequisites](#install-prerequisites)
    - [MongoDB](#MongoDB)
-   - [.env](#.env) file
+   - [.env](#env) file
 4. `npm start` to load local server (default port: `8080`)
+
+After:
+
+5. Check out [API](#API) details to connect your App.
+6. Check out [Models](#Models) section for details about Models.
 
 # **Install prerequisites**:
 
@@ -60,3 +67,129 @@ in root directory create `.env` file with link from _MongoDB Cluster_ and _JWT S
 MONGO_URI=mongodb+srv://<username>:<password>@some-link-to-db.azure.mongodb.net/<collection-name>?retryWrites=true&w=majority
 JWT_SECRET=<some-secured-key>
 ```
+
+---
+
+## Models
+
+### User:
+
+```ts
+{
+    email: string
+	password: string
+	credentials?: {
+		firstName?: string
+		lastName?: string
+		birthDate?: Date
+	}
+	isAdmin?: boolean
+}
+```
+
+### Product:
+
+```ts
+{
+	title: string
+	price: number
+	descSmall?: string
+	descFull?: string
+	imageUrl?: string
+	rating?: number
+}
+```
+
+---
+
+## **API**
+
+- all responces returns `JSON`
+- `POST | GET | DELETE` - expected method
+- `AUTH` - authentication neeeded
+- `ADMIN` - admin authentication needed
+
+### Auth:
+
+- `/auth/login` POST
+  - expects: `{ email: string, password: string }`
+  - returns: `{ message: string, token: string, userId: string }`
+- `/auth/register` POST
+  - expects:
+  ```ts
+  {
+    email: string
+    password: string
+    credentials?: {
+        firstName?: string
+        lastName?: string
+        birthDate?: Date
+    }
+  }
+  ```
+  - returns: `{ message: string, user: User Object }`
+
+### Products:
+
+- `/api/products` GET
+
+  - returns:
+
+  ```ts
+  {
+      message: string
+      docsCount: number
+      products: Product[]
+  }
+  ```
+
+- `/api/products/item/:prodId` GET
+
+  - expects: PARAM `prodId` - MongoID
+  - returns: `{ message: string, product: Product }`
+
+- `/api/products/add` POST AUTH ADMIN
+
+  - expects `multipart/form-data`:
+
+  ```ts
+  {
+      title: string
+      price: number
+      descSmall?: string
+      descFull?: string
+      imageUrl?: string
+      rating?: number
+      file?: File ('jpeg', 'jpg', 'png')
+  }
+  ```
+
+  - returns: `{ message: string, product: Product }`
+
+- `/api/products/edit` POST AUTH ADMIN
+
+  - expects `multipart/form-data`:
+
+  ```ts
+  {
+      title: string
+      price: number
+      descSmall?: string
+      descFull?: string
+      imageUrl?: string
+      rating?: number
+      file?: File ('jpeg', 'jpg', 'png')
+  }
+  ```
+
+  - returns: `{ message: string, prodId: MongoID, product: Product }`
+
+- `/api/products/remove` POST AUTH ADMIN
+
+  - expects: `{ prodId: MongoID }`
+  - returns: `{ message: string, prodId: MongoID }`
+
+- `/api/products/removeAll` DELETE AUTH ADMIN
+  - returns: `{ message: string }`
+
+---

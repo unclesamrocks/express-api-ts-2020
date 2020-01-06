@@ -1,11 +1,12 @@
 import { Router } from 'express'
 
 import apiProduct from './api-product'
-import apiUser from './api-user'
 
 const router = Router()
 
 router.use('/products', apiProduct)
-router.use('/auth', apiUser)
+
+// router.use('/cart', apiCart)
+// router.use('/category', apiCategory)
 
 export default router
