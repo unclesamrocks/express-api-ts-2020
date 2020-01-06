@@ -13,7 +13,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 		if (!getHeader) throw new ErrorType(500, 'No token provided')
 		const token = getHeader.split(' ')[1]
 		const decodedToken: any = verify(token, JWT_SECRET!)
-		if (!decodedToken) throw new ErrorType(500, 'not authenticated')
+		if (!decodedToken) throw new ErrorType(500, 'Not authenticated')
 		req.userId = decodedToken.userId
 		next()
 	} catch (error) {

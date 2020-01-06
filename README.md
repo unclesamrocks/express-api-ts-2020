@@ -109,6 +109,21 @@ JWT_SECRET=<some-secured-key>
 }
 ```
 
+### Cart:
+
+```ts
+type Basket = {
+	product: IProduct
+	count: number
+}[]
+
+interface ICart {
+	user: string
+	basket: Basket | []
+	totalPrice: number
+}
+```
+
 ---
 
 ## **API**
@@ -216,5 +231,24 @@ JWT_SECRET=<some-secured-key>
 
 - `/api/products/removeAll` DELETE AUTH ADMIN
   - returns: `{ message: string }`
+
+### Cart:
+
+- `/api/cart` GET AUTH
+
+  - returns: `{ message: 'OK', cart: Cart }`
+
+- `/api/cart/add` POST AUTH
+
+  - expects: `{ productId: MongoID }`
+  - returs: `{ message: 'OK', cart: Cart }`
+
+- `/api/cart/remove` POST AUTH
+
+  - expects: `{ productId: MongoID }`
+  - returs: `{ message: 'OK', cart: Cart }`
+
+- `/api/cart/removeCart` POST AUTH
+  - returs: `{ message: 'OK', cart: null }`
 
 ---
