@@ -4,14 +4,14 @@ export const addValidator = [
 	body('title')
 		.trim()
 		.isString()
-		.isLength({ min: 5 })
+		.isLength({ min: 3 })
 ]
 
 export const editValidator = [
 	body('title')
 		.trim()
 		.isString()
-		.isLength({ min: 5 }),
+		.isLength({ min: 3 }),
 	body('categoryId').isMongoId()
 ]
 

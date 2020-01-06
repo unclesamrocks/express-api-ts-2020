@@ -1,8 +1,49 @@
-import { body, param } from 'express-validator'
+import { body, param, sanitizeBody, query } from 'express-validator'
+import validator from 'validator'
+
+import Category from '../models/category'
+
+const { isMongoId } = validator
+
+/*==============================================
+				category await loop
+===============================================*/
+
+const sanitizeCategories = (input: string): any[] => [...new Set(JSON.parse(input))]
+
+const sanitizeQueryCategories = (input: string): any[] => [...new Set(input.split(','))]
+
+const checkCats = async (categoryIdArr: string[]) => {
+	try {
+		if (categoryIdArr.length === 0) return Promise.resolve()
+		for (const categoryId of categoryIdArr) {
+			if (!isMongoId(categoryId)) return Promise.reject("Category ID's are not valid MongoID's")
+		}
+		const catsCount = await Category.countDocuments({
+			_id: {
+				$in: categoryIdArr
+			}
+		})
+		return categoryIdArr.length === catsCount ? Promise.resolve() : Promise.reject("All or some Category ID's are not valid")
+	} catch (error) {
+		return Promise.reject(error)
+	}
+}
 
 /*==============================================
                 validation
 ===============================================*/
+
+export const getValidation = [
+	query('categories')
+		.optional()
+		.customSanitizer(sanitizeQueryCategories)
+		.custom(checkCats),
+	query(['page', 'limit'])
+		.optional()
+		.customSanitizer(value => parseInt(value))
+		.isInt({ min: 0 })
+]
 
 export const addValidation = [
 	body('title')
@@ -21,7 +62,12 @@ export const addValidation = [
 		.isLength({ min: 10 }),
 	body('imageUrl')
 		.optional()
-		.isURL({ require_host: false, allow_protocol_relative_urls: true })
+		.isURL({ require_host: false, allow_protocol_relative_urls: true }),
+	body('categories')
+		.optional()
+		.customSanitizer(sanitizeCategories)
+		.isArray({ min: 1 })
+		.custom(checkCats)
 ]
 
 export const editValidation = [
@@ -36,7 +82,12 @@ export const editValidation = [
 	body('descFull').isLength({ min: 10 }),
 	body('imageUrl')
 		.optional()
-		.isURL({ require_host: false, allow_protocol_relative_urls: true })
+		.isURL({ require_host: false, allow_protocol_relative_urls: true }),
+	body('categories')
+		.optional()
+		.customSanitizer(sanitizeCategories)
+		.isArray({ min: 1 })
+		.custom(checkCats)
 ]
 
 export const removeValidation = body('prodId').isMongoId()

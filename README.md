@@ -92,11 +92,20 @@ JWT_SECRET=<some-secured-key>
 ```ts
 {
 	title: string
-	price: number
+    price: number
+    category?: Category[]
 	descSmall?: string
 	descFull?: string
 	imageUrl?: string
 	rating?: number
+}
+```
+
+### Category:
+
+```ts
+{
+	title: string
 }
 ```
 
@@ -105,6 +114,7 @@ JWT_SECRET=<some-secured-key>
 ## **API**
 
 - all responces returns `JSON`
+- all `query` params are **optional**
 - `POST | GET | DELETE` - expected method
 - `AUTH` - authentication neeeded
 - `ADMIN` - admin authentication needed
@@ -133,6 +143,18 @@ JWT_SECRET=<some-secured-key>
 
 - `/api/products` GET
 
+  - `query`?: **optional!**
+
+    Example:
+
+    ```
+    /api/products?limit=2&page=1&categories=5e1358fb9d5c16200598ece3,5e1353102ebad91c378afd09
+    ```
+
+    - `page` - sets current page (positive `Int`)
+    - `limit` - sets number of items (per page, positive `Int`)
+    - `categories` - possible to pass MongoID's with Category refs
+
   - returns:
 
   ```ts
@@ -151,11 +173,13 @@ JWT_SECRET=<some-secured-key>
 - `/api/products/add` POST AUTH ADMIN
 
   - expects `multipart/form-data`:
+  - `categories
 
   ```ts
   {
       title: string
       price: number
+      categories?: string[]
       descSmall?: string
       descFull?: string
       imageUrl?: string
@@ -174,6 +198,7 @@ JWT_SECRET=<some-secured-key>
   {
       title: string
       price: number
+      categories?: string[]
       descSmall?: string
       descFull?: string
       imageUrl?: string

@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
 import { isErrors } from '../middleware/isErrors'
-import { addValidation, editValidation, removeValidation, findOneValidation } from '../validators/api-product'
+import { addValidation, editValidation, removeValidation, findOneValidation, getValidation } from '../validators/api-product'
 import multer from '../middleware/multer'
 import { isAdmin, isAuthenticated as isAuth } from '../middleware/auth'
 
@@ -12,7 +12,7 @@ import { getAllProducts, findOne, addOne, removeOne, editOne, removeAll } from '
 ===============================================*/
 const router = Router()
 
-router.get('/', getAllProducts)
+router.get('/', getValidation, isErrors, getAllProducts)
 
 router.get('/item/:prodId', findOneValidation, isErrors, findOne)
 
