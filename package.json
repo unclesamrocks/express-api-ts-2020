@@ -38,9 +38,9 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "rimraf dist && tsc",
-		"start:dev": "npm run build && (tsc -w & nodemon -r dotenv/config ./dist/app.js)",
+		"start:dev": "npm run build && ((start tsc -w && nodemon -r dotenv/config ./dist/app.js) || (start tsc -w & nodemon -r dotenv/config ./dist/app.js))",
 		"start:prod": "npm run build && node -r dotenv/config ./dist/app.js",
-		"start": "npm run start:dev"
+		"start": "npm run start:prod"
 	},
 	"keywords": [],
 	"author": "",
