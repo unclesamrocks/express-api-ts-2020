@@ -5,7 +5,7 @@ import { sign as jwtSign } from 'jsonwebtoken'
 import User from '../models/user'
 import { ErrorType } from '../types/error'
 
-const { JWT_SECRET } = process.env
+import { JWT_SECRET } from '../utils/process.env'
 
 export const register: RequestHandler = async (req, res, next) => {
 	try {

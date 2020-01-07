@@ -9,7 +9,7 @@ import DIRS from './utils/path'
 
 import rootRouter from './routes/root'
 
-const { MONGO_URI } = process.env
+import { MONGO_URI } from './utils/process.env'
 
 /*==============================================
                 app

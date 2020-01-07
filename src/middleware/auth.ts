@@ -5,7 +5,7 @@ import { ErrorType } from '../types/error'
 
 import User from '../models/user'
 
-const { JWT_SECRET } = process.env
+import { JWT_SECRET } from '../utils/process.env'
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
 	try {
